@@ -329,7 +329,7 @@ public class OverlayService extends Service {
                     PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0));
             Notification n = new NotificationCompat.Builder(this, CHANNEL_ALERT)
                     .setSmallIcon(R.drawable.ic_stat_drop)
-                    .setContentTitle("Time to drink some water")
+                    .setContentTitle("Time to take tablet")
                     .setContentText("Tap to meet your buddy")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_REMINDER)
@@ -337,7 +337,7 @@ public class OverlayService extends Service {
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setAutoCancel(true)
                     .setContentIntent(open)
-                    .addAction(0, "I drank", svcIntent(ACTION_DRANK, 11))
+                    .addAction(0, "I took", svcIntent(ACTION_DRANK, 11))
                     .addAction(0, "Remind me later", svcIntent(ACTION_LATER, 12))
                     .build();
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(ALERT_ID, n);
@@ -355,8 +355,8 @@ public class OverlayService extends Service {
             ch.setShowBadge(false);
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.createNotificationChannel(ch);
-            NotificationChannel alert = new NotificationChannel(CHANNEL_ALERT, "Water reminders", NotificationManager.IMPORTANCE_HIGH);
-            alert.setDescription("Your drink-water reminders");
+            NotificationChannel alert = new NotificationChannel(CHANNEL_ALERT, "Tablet reminders", NotificationManager.IMPORTANCE_HIGH);
+            alert.setDescription("Your tablet reminders");
             alert.enableVibration(true);
             alert.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             nm.createNotificationChannel(alert);

@@ -21,7 +21,7 @@ const DEFAULTS = {
   preset: '',             // name of a bundled preset (empty = uploaded video)
   intervalMin: 45,
   snoozeMin: 15,
-  message: 'Time to drink some water',
+  message: 'Time to take your tablet',
   size: 200,              // character box (px)
   anchor: 'bottom-right', // bottom-right | bottom-left | top-right | top-left | custom
   keyLow: 30,             // white-key: below this "whiteness distance" => transparent

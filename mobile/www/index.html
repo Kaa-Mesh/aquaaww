@@ -113,16 +113,16 @@
     </div>
 
     <div class="ctr" style="left:314.42px;top:63.05px;width:56.153px;height:35.899px">
-      <div style="transform:rotate(2deg);width:55px;height:34px;position:relative"><img class="layer cover" alt="Drink water" src="img/design/drink-water.png"></div>
+      <div style="transform:rotate(2deg);width:55px;height:34px;position:relative;display:flex;align-items:center;justify-content:center;background:var(--tape);border:1.5px solid var(--ink);border-radius:6px;box-shadow:2px 2px 0 var(--ink)"><span class="marker" style="font-size:8.5px;color:var(--ink);text-align:center;line-height:1.1;letter-spacing:.3px">TAKE<br>TABLET</span></div>
     </div>
     <div class="ctr" style="left:312px;top:101px;width:61.331px;height:30.103px">
       <div id="inTime" class="marker" style="transform:rotate(-3deg);font-size:18.199px;color:var(--coral);white-space:nowrap">in –</div>
     </div>
 
-    <div class="abs marker" style="left:71px;top:201px;width:259px;font-size:11.099px;color:#342725;white-space:normal;line-height:normal">
-      <p style="margin:0">I built JoyBoy Reminder because I can’t always be there to say “have some water.”</p>
-      <p style="margin:0"><br>So I made something small that sits quietly on your screen and says it for me, with a smile.<br>Every sip is me looking out for you, even when I’m not in the room.</p>
-      <p style="margin:7px 0 0;text-align:right;color:var(--coral)">– by Kaamesh</p>
+    <div class="abs marker" style="left:71px;top:192px;width:265px;font-size:10px;color:#342725;white-space:normal;line-height:1.3">
+      <p style="margin:0">I BUILT THIS JOYBOY REMINDER BCZ I'LL ALWAYS BE THERE TO SAY TO "TAKE TABLET" BUT NOWADAYS U AREN'T LISTENING TO ME😒.</p>
+      <p style="margin:6px 0 0">SO I MADE SOMETHING SMALL THAT SITS QUIETLY ON UR SCREEN AND SAYS IT FOR ME, WITH A SMILE. SO MOODITU OZHUNGA PODU IDHAYU IGNORE PANADHA ERUMADU... GUNDACHI TABLET EPAVU CRT AH EDU🫂</p>
+      <p style="margin:7px 0 0;text-align:right;color:var(--coral)">- TO U ERUMA</p>
     </div>
 
     <!-- hand-drawn frame + the buddy -->
@@ -184,8 +184,8 @@
     <div class="obStep" id="obStep1">
       <div class="obCount">1 of 2</div>
       <h1>First, let me reach you</h1>
-      <div class="obMock"><b>Time to drink some water</b><span>Tap to meet your buddy</span><div class="obBtns"><i>I drank</i><i>Remind me later</i></div></div>
-      <p>JoyBoy Reminder works by sending you a gentle reminder with two buttons: <b>“I drank”</b> and <b>“Later”</b>.</p>
+      <div class="obMock"><b>Time to take tablet</b><span>Tap to meet your buddy</span><div class="obBtns"><i>I took</i><i>Remind me later</i></div></div>
+      <p>JoyBoy Reminder works by sending you a gentle reminder with two buttons: <b>“I took”</b> and <b>“Later”</b>.</p>
       <p>If notifications are off, I can’t reach you, and the reminder is lost. So this one is <b>required</b>.</p>
       <p class="obWarn" id="obWarn"></p>
       <button class="coralBtn big" id="obNotif">Allow notifications</button>
@@ -213,7 +213,7 @@
   <div class="row"><span>Pause reminders</span><label class="switch"><input type="checkbox" id="paused"><i></i></label></div>
   <div class="row"><span id="perm" style="flex:1">Notifications</span><button class="chip" id="enable">Enable</button></div>
   <div class="row" style="margin-top:18px"><button class="coralBtn" id="t30">Test in 30 seconds</button></div>
-  <p class="note">Reminders arrive as notifications with “I drank” and “Remind me later”. If they come late, set battery to “Unrestricted” for JoyBoy Reminder in Android settings.</p>
+  <p class="note">Reminders arrive as notifications with “I took” and “Remind me later”. If they come late, set battery to “Unrestricted” for JoyBoy Reminder in Android settings.</p>
 </section>
 
 <section class="sheet" id="sheetTime">
@@ -231,7 +231,7 @@
   <h2>Floating buddy<small>settings for: showing up over other apps</small></h2>
   <div class="row"><span>Show over other apps</span><label class="switch"><input type="checkbox" id="ovOn"><i></i></label></div>
   <p class="note" id="ovmsg"></p>
-  <div class="row"><span>Also send a notification<br><small style="color:#7a6a64;font-size:11px">with “I drank” and “Later” buttons</small></span><label class="switch"><input type="checkbox" id="ovNotify"><i></i></label></div>
+  <div class="row"><span>Also send a notification<br><small style="color:#7a6a64;font-size:11px">with “I took” and “Later” buttons</small></span><label class="switch"><input type="checkbox" id="ovNotify"><i></i></label></div>
   <div class="row"><span>Let taps pass through the buddy<br><small style="color:#7a6a64;font-size:11px">slightly see-through</small></span><label class="switch"><input type="checkbox" id="ovPass"><i></i></label></div>
   <div class="field"><span>Corner</span><div class="seg" id="cornerSeg"></div></div>
   <div class="row" style="gap:10px;justify-content:flex-start"><button class="coralBtn" id="ovDrag">Drag to place…</button><button class="coralBtn" id="ovNow">Show it now</button></div>
@@ -390,7 +390,7 @@ async function schedule(firstMin = S.interval) {
   if (S.paused || !LN) { save(); return; }
   const out = []; let t = new Date(Date.now() + firstMin * 60000), id = 1; const end = Date.now() + 48 * 3600e3;
   while (out.length < 60 && t.getTime() < end) {
-    if (inWindow(t)) { out.push({ id: id++, title: 'Time to drink some water', body: 'Tap to meet your buddy', channelId: 'reminders', actionTypeId: 'REMIND', smallIcon: 'ic_stat_drop',
+    if (inWindow(t)) { out.push({ id: id++, title: 'Time to take tablet', body: 'Tap to meet your buddy', channelId: 'reminders', actionTypeId: 'REMIND', smallIcon: 'ic_stat_drop',
         schedule: { at: new Date(t), allowWhileIdle: true } }); t = new Date(t.getTime() + S.interval * 60000); }
     else t = new Date(t.getTime() + 5 * 60000);                               // skip ahead until the active window opens
   }
@@ -550,7 +550,7 @@ $('t30').onclick = async () => {
   try {
     if (overlayActive()) await WO.testIn({ seconds: 30 });
     else if (LN) { try { await LN.cancel({ notifications: [{ id: 9001 }] }); } catch {}
-      await LN.schedule({ notifications: [{ id: 9001, title: 'Time to drink some water', body: 'Tap to meet your buddy', channelId: 'reminders', actionTypeId: 'REMIND', smallIcon: 'ic_stat_drop', schedule: { at: new Date(Date.now() + 30000), allowWhileIdle: true } }] }); }
+      await LN.schedule({ notifications: [{ id: 9001, title: 'Time to take tablet', body: 'Tap to meet your buddy', channelId: 'reminders', actionTypeId: 'REMIND', smallIcon: 'ic_stat_drop', schedule: { at: new Date(Date.now() + 30000), allowWhileIdle: true } }] }); }
     else return toast('Test needs the installed app');
   } catch (e) { return toast('Could not schedule: ' + (e.message || e)); }
   toast('Switch to another app. Reminder in 30 seconds.');
@@ -578,8 +578,8 @@ async function init() {
   await step(1, async () => { try { presets = await (await fetch('presets/index.json')).json(); } catch { presets = []; } });   // layer 2: buddies
   await step(2, async () => {                                                                       // layer 3: notifications + overlay
     if (LN) {
-      try { await LN.createChannel({ id: 'reminders', name: 'Water reminders', description: 'Your drink-water reminders', importance: 4, visibility: 1, vibration: true }); } catch {}
-      try { await LN.registerActionTypes({ types: [{ id: 'REMIND', actions: [{ id: 'drank', title: 'I drank' }, { id: 'later', title: 'Remind me later' }] }] }); } catch {}
+      try { await LN.createChannel({ id: 'reminders', name: 'Tablet reminders', description: 'Your tablet reminders', importance: 4, visibility: 1, vibration: true }); } catch {}
+      try { await LN.registerActionTypes({ types: [{ id: 'REMIND', actions: [{ id: 'drank', title: 'I took' }, { id: 'later', title: 'Remind me later' }] }] }); } catch {}
       LN.addListener('localNotificationActionPerformed', async ev => {
         if (ev.actionId === 'drank') { await drank(); renderHome(); minimize(); }
         else if (ev.actionId === 'later') { await later(); renderHome(); minimize(); }

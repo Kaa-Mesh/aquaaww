@@ -64,7 +64,7 @@ wb.onShow(p => {
   else if (p.preview) {                                     // just trying a new video: nothing is counted or rescheduled
     mk('drank', 'Looks good', () => { session++; stop(); wb.previewDone(); });
   } else {
-    mk('drank', 'I drank', () => { session++; stop(); wb.drank(); });
+    mk('drank', 'I took', () => { session++; stop(); wb.drank(); });
     mk('snooze', 'or later · ' + p.snoozeMin + ' min', () => { session++; stop(); wb.snooze(); });
   }
   root.classList.remove('on');
@@ -116,7 +116,7 @@ function setMsg(text, plain) {
   const el = document.getElementById('msg');
   if (plain) { el.className = 'msg'; el.textContent = text; return; }   // edit-mode hint is plain text
   el.className = 'msg fun';
-  el.innerHTML = '<img class="title" src="../assets/title.png" alt="Drink water">';
+  el.innerHTML = '<div style="font-family:\'Permanent Marker\',\'Chalkboard SE\',\'Marker Felt\',\'Segoe Print\',\'Comic Sans MS\',system-ui,sans-serif;font-size:14.5px;color:#1d1d1d;font-weight:700;letter-spacing:.4px;text-transform:uppercase;line-height:1.22;margin:0 0 5px;transform:rotate(-1deg);text-align:center">' + (text || 'Time to take tablet') + '</div>';
 }
 
 function paint() {
