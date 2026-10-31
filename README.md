@@ -46,9 +46,6 @@ Set `repository` in `package.json` to your GitHub repo, publish a Release with a
 `gen-icons.js` (every icon from `assets/aquaaww-logo-source.svg`, needs `npm i --no-save sharp`), `gen-paper.js` and `gen-title.js` (cut-outs). Run with
 `npx electron <script>`.
 
-## License
-
-MIT, see [LICENSE](LICENSE). Bundled artwork and any media you add keep their own authors' rights.
 
 ## Author
 
