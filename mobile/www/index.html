@@ -113,7 +113,7 @@
     </div>
 
     <div class="ctr" style="left:314.42px;top:63.05px;width:56.153px;height:35.899px">
-      <div style="transform:rotate(2deg);width:55px;height:34px;position:relative;display:flex;align-items:center;justify-content:center;background:var(--tape);border:1.5px solid var(--ink);border-radius:6px;box-shadow:2px 2px 0 var(--ink)"><span class="marker" style="font-size:8.5px;color:var(--ink);text-align:center;line-height:1.1;letter-spacing:.3px">TAKE<br>TABLET</span></div>
+      <div style="transform:rotate(2deg);width:55px;height:34px;position:relative"><img class="layer cover" alt="Take Tablet" src="img/design/drink-water.png"></div>
     </div>
     <div class="ctr" style="left:312px;top:101px;width:61.331px;height:30.103px">
       <div id="inTime" class="marker" style="transform:rotate(-3deg);font-size:18.199px;color:var(--coral);white-space:nowrap">in –</div>
@@ -214,6 +214,7 @@
   <div class="row"><span id="perm" style="flex:1">Notifications</span><button class="chip" id="enable">Enable</button></div>
   <div class="row" style="margin-top:18px"><button class="coralBtn" id="t30">Test in 30 seconds</button></div>
   <p class="note">Reminders arrive as notifications with “I took” and “Remind me later”. If they come late, set battery to “Unrestricted” for JoyBoy Reminder in Android settings.</p>
+  <p class="note" style="margin-top:10px"><a href="https://wa.me/+919360017263" target="_blank" style="color:var(--ink);text-decoration:underline dashed">Privacy Policy</a></p>
 </section>
 
 <section class="sheet" id="sheetTime">
@@ -270,7 +271,7 @@ function fit() { scale = Math.min(innerWidth / 402, innerHeight / 874); $('stage
 addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); if (window.visualViewport) visualViewport.addEventListener('resize', fit); fit();
 
 /* ---------------- settings ---------------- */
-const PRESET_MODES = { 'yours truly': 'green', 'JoyBoy': 'raw' };                                  // presets filmed on a green screen
+const PRESET_MODES = { 'JoyBoy': 'raw' };                                  // presets mode map
 const modeOf = () => (S.source === 'preset' && PRESET_MODES[S.preset || presets[0]]) || S.mode || (S.keyed ? 'white' : 'raw');                    // 'white' = remove white, 'raw' = as is, 'person' = cut out a person on any background
 const DEF = { interval: 45, snooze: 15, from: '09:00', to: '21:00', paused: false, source: 'preset', preset: '', keyed: true, stats: {}, nextAt: 0, overlay: false, corner: 'bottom-right', nativeVideo: '' };
 let S = { ...DEF, ...(JSON.parse(localStorage.getItem('wb') || '{}')) };

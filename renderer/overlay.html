@@ -116,7 +116,7 @@ function setMsg(text, plain) {
   const el = document.getElementById('msg');
   if (plain) { el.className = 'msg'; el.textContent = text; return; }   // edit-mode hint is plain text
   el.className = 'msg fun';
-  el.innerHTML = '<div style="font-family:\'Permanent Marker\',\'Chalkboard SE\',\'Marker Felt\',\'Segoe Print\',\'Comic Sans MS\',system-ui,sans-serif;font-size:14.5px;color:#1d1d1d;font-weight:700;letter-spacing:.4px;text-transform:uppercase;line-height:1.22;margin:0 0 5px;transform:rotate(-1deg);text-align:center">' + (text || 'Time to take tablet') + '</div>';
+  el.innerHTML = '<img class="title" src="../assets/title.png" alt="Take Tablet">';
 }
 
 function paint() {

@@ -340,8 +340,8 @@ function convertVideo(src, dest) {
 }
 const PRESET_DIR = path.join(__dirname, 'assets', 'presets').replace('app.asar', 'app.asar.unpacked');
 const listPresets = () => { try { return fs.readdirSync(PRESET_DIR).filter(f => /\.mp4$/i.test(f)).map(f => f.replace(/\.mp4$/i, '')).sort(); } catch { return []; } };
-const PRESET_MODES = { 'yours truly': 'green', 'JoyBoy': 'raw' };   // presets filmed on a green screen
-const defaultPreset = () => { const l = listPresets(); return l.includes('JoyBoy') ? 'JoyBoy' : (l.includes('yours truly') ? 'yours truly' : l[0]); };
+const PRESET_MODES = { 'JoyBoy': 'raw' };   // presets mode map
+const defaultPreset = () => { const l = listPresets(); return l.includes('JoyBoy') ? 'JoyBoy' : l[0]; };
 function usePreset(name, show = true) {
   const km = PRESET_MODES[name] || 'white';
   set({ videoPath: path.join(PRESET_DIR, name + '.mp4'), keyed: km === 'white', keyMode: km, preset: name }, true);
