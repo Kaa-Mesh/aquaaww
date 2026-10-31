@@ -1,0 +1,224 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/twototango",
+      "destination": "/aquaaww/",
+      "permanent": true
+    },
+    {
+      "source": "/twototango/",
+      "destination": "/aquaaww/",
+      "permanent": true
+    },
+    {
+      "source": "/twototango/(.+)",
+      "destination": "/aquaaww/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "twototango-plum.vercel.app"
+        }
+      ],
+      "destination": "https://dusktillus.store/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.dusktillus.store"
+        }
+      ],
+      "destination": "https://dusktillus.store/$1",
+      "permanent": true
+    },
+    {
+      "source": "/water-reminder-app-for-android",
+      "destination": "/aquaaww/water-reminder-app-for-android/",
+      "permanent": true
+    },
+    {
+      "source": "/water-reminder-app-for-windows",
+      "destination": "/aquaaww/water-reminder-app-for-windows/",
+      "permanent": true
+    },
+    {
+      "source": "/water-reminder-app-for-mac",
+      "destination": "/aquaaww/water-reminder-app-for-mac/",
+      "permanent": true
+    },
+    {
+      "source": "/flipbook",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/flipbook/",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/aquaaww/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/flipbook/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/flipbook/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/m/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/aquaaww/demo.mp4",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/app-config.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/auth/:a",
+      "destination": "/api/portal?r=auth&a=:a"
+    },
+    {
+      "source": "/api/account/:a",
+      "destination": "/api/portal?r=account&a=:a"
+    },
+    {
+      "source": "/api/support/:a",
+      "destination": "/api/portal?r=support&a=:a"
+    },
+    {
+      "source": "/api/admin/:a",
+      "destination": "/api/portal?r=admin&a=:a"
+    },
+    {
+      "source": "/api/t",
+      "destination": "/api/collect"
+    },
+    {
+      "source": "/api/products",
+      "destination": "/api/shop?a=products"
+    },
+    {
+      "source": "/api/checkout",
+      "destination": "/api/shop?a=checkout"
+    },
+    {
+      "source": "/api/checkout-verify",
+      "destination": "/api/shop?a=checkout-verify"
+    },
+    {
+      "source": "/api/order",
+      "destination": "/api/shop?a=order"
+    },
+    {
+      "source": "/api/download",
+      "destination": "/api/shop?a=download"
+    },
+    {
+      "source": "/api/admin-orders",
+      "destination": "/api/shop?a=admin-orders"
+    }
+  ]
+}

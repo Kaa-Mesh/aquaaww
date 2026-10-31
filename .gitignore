@@ -22,3 +22,7 @@ mobile/www/presets/*.mp4
 
 # Workflow kept in docs/release.yml.example
 .github/
+
+# Media files
+*.mp4
+*.mov

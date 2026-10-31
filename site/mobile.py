@@ -1,0 +1,186 @@
+"""Static mobile home page, built 1:1 from the Figma frame "iPhone 16 & 17 Pro - 4" (402 x 874).
+Every size is written in Figma pixels and converted to calc(var(--u) * n), where --u is 1/402 of the page width,
+so the whole layout scales with the screen. No JavaScript is needed to lay it out."""
+import re, json, html
+from guides import ARTICLES
+
+F = "/flipbook/img/"      # images shared with the desktop book
+M = "/m/img/"             # images drawn for the phone frame
+
+def fx(l, t, w, h, inner, iw=None, ih=None, rot=None, flip=False, extra="", inner_extra=""):
+    tr = []
+    if rot is not None: tr.append(f"rotate({rot}deg)")
+    if flip: tr.append("scaleX(-1)")
+    st = f"width:{iw}px;" if iw else ""
+    st += f"height:{ih}px;" if ih else ""
+    if tr: st += "transform:" + " ".join(tr) + ";"
+    return (f'<div class="fx" style="left:{l}px;top:{t}px;width:{w}px;height:{h}px{extra}">'
+            f'<div class="in" style="{st}{inner_extra}">{inner}</div></div>')
+
+def img(src, cls="cover", style="", alt="", lazy=True, w=None, h=None):
+    dim = f' width="{w}" height="{h}"' if w else ""
+    ld = ' loading="lazy" decoding="async"' if lazy else ""
+    return f'<img class="{cls}" alt="{alt}" src="{src}"{dim}{ld} style="{style}">'
+
+def home_sr(h1=False, envelope=False):
+    """Text for the visually hidden block of the home page (desktop and phone use the same words).
+    It repeats what the page shows, as real headings and links, so crawlers and screen readers can read it."""
+    memory = ('<h2>The Memory Fold Envelope</h2>'
+        '<p>Every love story deserves a place to live outside of a phone screen. Unfold your favorite moments together. The Memory Fold Envelope is an artisan-crafted paper keepsake folder '
+        'designed for couples to store photos and date night memories. Wrapped in a customized vintage map lining or constellation, it transforms your cherished milestones into a physical journey you can re-live over and over.</p>') if envelope else ''
+    guides = "".join(f'<li><a href="/guides/{a["slug"]}/">{html.escape(a["h1"])}</a></li>' for a in ARTICLES)
+    return ('<div class="sr">' + ('<h1>Dusktillus, our digital garage</h1>' if h1 else '') +
+        '<p>Dusktillus makes little apps that look after you. Our first app, AquaAww, is a water reminder that comes as someone you love, free for Android, Windows and Mac.</p>'
+        '<h2>Our digital garage</h2>'
+        '<p>Feel free to hang out and try everything. You can find us on Instagram as <a href="https://www.instagram.com/dusktillus/">dusktillus</a>.</p>'
+        '<h2>AquaAww, a water reminder that comes as someone you love</h2>'
+        '<p>I built AquaAww because I can’t always be there to say “have some water.” So I made something small that sits quietly on your screen and says it for me, with a smile. '
+        'Every sip is me looking out for you, even when I’m not in the room. For my wife.</p>'
+        '<p>You upload a short video of someone you love. At the interval you choose, that video pops up on your screen, floating over whatever you are doing, '
+        'with two buttons: I drank, or remind me later. AquaAww is free, has no ads and needs no account, and your videos stay on your phone or computer.</p>'
+        '<h3>Get AquaAww</h3>'
+        '<ul><li><a href="/aquaaww/water-reminder-app-for-android/">AquaAww water reminder app for Android</a></li>'
+        '<li><a href="/aquaaww/water-reminder-app-for-windows/">AquaAww water reminder app for Windows</a></li>'
+        '<li><a href="/aquaaww/water-reminder-app-for-mac/">AquaAww water reminder app for Mac</a></li>'
+        '<li><a href="/aquaaww/">AquaAww: how it works, features and answers to common questions</a></li></ul>' + memory +
+        '<h2>What is dropping next</h2>'
+        '<p>We’re loading up the good stuff. Take an exclusive look at what’s dropping next! The cardboard box is still empty. Coming soon!</p>'
+        '<h2>Water and hydration guides</h2><ul>' + guides + '</ul>'
+        '<nav aria-label="Site"><a href="/aquaaww/">AquaAww water reminder app</a> <a href="/guides/">Water and hydration guides</a> <a href="/terms/">Terms and Conditions</a> <a href="/privacy/">Privacy</a> '
+        '<a href="/refund-policy/">Refund and cancellation policy</a> <a href="/shipping-policy/">Shipping policy</a> <a href="/contact/">Contact</a> <a href="/unsubscribe/">Unsubscribe</a></nav></div>')
+
+def build(D, hub_ld, GH):
+    sr = home_sr(h1=True)
+
+    # ---------- top page (331 x 503.28) ----------
+    top = []
+    top.append('<div class="tex tr"><img class="cover" alt="" src="' + M + 'bg-m.webp" decoding="async" style="opacity:.5"></div>')
+    top.append('<p class="a jb nw" style="left:24.72px;top:16.75px;font-size:6.381px;color:#7e7e7b">Insta ID - </p>')
+    top.append('<p class="a jb nw" style="left:24.72px;top:24.72px;font-size:11.166px;color:#000"><a class="ig" href="https://www.instagram.com/dusktillus/" target="_blank" rel="noopener">dusktillus</a></p>')
+    top.append('<div class="a" style="left:165.9px;top:167.89px;width:168.292px;height:0;transform:translate(-50%,-50%) rotate(-90deg)"><img alt="" src="' + M + 'line21.svg" style="position:absolute;left:0;top:-.8px;width:168.292px;height:.8px"></div>')
+    top.append('<div class="a" style="left:165.9px;top:252.04px;width:280.752px;height:0;transform:translate(-50%,-50%) rotate(180deg)"><img alt="" src="' + M + 'line22.svg" style="position:absolute;left:0;top:-.8px;width:280.752px;height:.8px"></div>')
+    top.append(fx(22.33, 88.53, 125.245, 28.886, '<p class="ad" style="width:124.254px">Our digital garage,</p>', rot=-5.99))
+    top.append('<div class="fx" style="left:39.08px;top:126.82px;width:121.847px;height:48.171px"><div class="in ad" style="width:121.779px;transform:rotate(-.08deg);white-space:pre-wrap"><p>—feel free to </p><p>hang out and try everything</p></div></div>')
+    top.append(fx(39.08, 192.22, 116.072, 17.163, '<p class="ad" style="width:116.049px;font-size:12.417px">its so so cool,</p>', rot=-0.08))
+    top.append(fx(39.08, 217.74, 116.072, 17.163, '<p class="ad" style="width:116.049px;font-size:12.417px">*wipes tear*</p>', rot=-0.08))
+    top.append(fx(179.46, 386.9, 100.192, 75.9, '<p class="ad" style="width:100.08px">We\'re loading up the good stuff. Take an exclusive look at what\u2019s dropping next!</p>', rot=-0.08))
+    top.append('<div class="a" style="left:222.1px;top:416px;width:54.5px;height:20.8px"><img alt="" src="' + F + 'exclusive.svg" style="position:absolute;left:0;top:0;width:100%;height:100%"></div>')
+        # strip of paper on the inner (right) edge, drawn flipped as in the design
+    top.append('<div class="a" style="right:0;top:0;width:51.046px;height:501.684px;transform:scaleX(-1);border-top-right-radius:22.33px;overflow:hidden"><div class="tex" style="border-top-right-radius:22.33px"><img class="cover" alt="" src="' + M + 'bg-m.webp" decoding="async" style="opacity:.5"></div></div>')
+    # torn paper along the bottom of the page
+    top.append('<div class="fx" style="left:calc(50% + 2.04px);top:405.2px;width:571.075px;height:571.075px;transform:translateX(-50%)"><div class="in" style="width:571.075px;height:571.075px;transform:rotate(-90deg)"><img class="cover" alt="" src="' + F + 'paper02.webp" decoding="async" style="opacity:.5"></div></div>')
+    top.append(fx(267.39, -0.16, 61.433, 59.041, img(F + "cal.webp", lazy=False), 60.757, 58.337, rot=0.67))
+    top.append(fx(287.1, 23.68, 17.139, 19.513, img(F + "heart.webp", lazy=False), 16.323, 18.809, rot=-2.54))
+    top = [top[0], '<div class="pi">' + "".join(top[1:]) + '</div>', '<div class="bd tr"></div>']
+
+    # ---------- things that sit over the top page ----------
+    ex = []
+    ex.append('<p class="a jb nw" style="left:25.52px;top:264px;font-size:11.166px;color:#000">Cardboard box:</p>')
+    ex.append(fx(20.107, 283.94, 136.243, 203.137, img(F + "box.webp", style="border-top-right-radius:22.33px", alt="An empty cardboard box, waiting to be filled"), 135.423, 202.588, rot=179.77))
+    # collage
+    ex.append(fx(158.45, 64.6, 167.447, 146.235, f'<div class="clip" style="border-top-right-radius:22.33px"><img alt="" src="{F}polaroid.webp" decoding="async" style="position:absolute;left:0;top:0;height:100%;width:108.55%"></div>', 146.501, 119.275, rot=11.57))
+    ex.append(fx(181.76, 94.27, 132.256, 100.935, f'<div class="clip"><img alt="Two people painting a detailed line drawing with watercolours" src="{M}couple-mc.webp" decoding="async" style="position:absolute;left:-.02%;top:-1.5714%;height:103.0679%;width:100.8937%"></div>', 118.925, 78.786, rot=11.51))
+    ex.append(fx(155.23, 139.2, 124.17, 87.29, f'<div class="clip" style="border-top-right-radius:22.33px"><img alt="Two people leaning together over a pottery wheel" src="{M}food-m.webp" decoding="async" style="position:absolute;left:-38.09%;top:-15.02%;height:161.38%;width:143.13%"></div>', 118.866, 79.067, rot=-4.06))
+    ex.append(fx(133.99, 118.26, 163.839, 125.762, img(F + "polaroid.webp", lazy=False, style="border-top-right-radius:22.33px"), 159.034, 119.275, rot=-2.37))
+    ex.append(fx(203.85, 156.17, 120.671, 114.852, f'<div class="clip" style="border-top-right-radius:22.33px"><img alt="A bouquet of sunflowers wrapped in kraft paper" src="{F}sunflowers.webp" decoding="async" style="position:absolute;left:0;top:0;height:100%;width:115.64%"></div>', 102.481, 94.806, rot=-12.58))
+
+    # ---------- bottom page (built mirrored, like the design) ----------
+    b = []
+    b.append('<div class="tex br"><img class="cover" alt="" src="' + M + 'bg-m.webp" loading="lazy" decoding="async" style="opacity:.5"></div>')
+    b.append('<div class="fx" style="left:-143.57px;top:-95.715px;width:571.075px;height:571.075px"><div class="in" style="width:571.075px;height:571.075px;transform:rotate(-90deg) scaleY(-1)"><img class="cover" alt="" src="' + F + 'paper02.webp" loading="lazy" decoding="async" style="opacity:.5"></div></div>')
+    b.append('<div class="a" style="left:330.2px;top:252.44px;width:503.28px;height:0;transform:translate(-50%,-50%) rotate(-90deg) scaleY(-1)"><img alt="" src="' + M + 'line23.svg" style="position:absolute;left:0;top:-.8px;width:503.28px;height:.8px"></div>')
+    b.append('<div class="fx" style="left:28.148px;top:64.6px;width:219.102px;height:160.308px"><div class="in" style="width:218.877px;transform:rotate(-179.92deg) scaleY(-1)"><div class="ad" style="text-align:right;white-space:pre-wrap"><p style="white-space:nowrap">I built <span style="color:#e83328"> </span>'
+             f'<a href="/aquaaww/" style="color:#e83328;text-decoration:underline wavy;text-decoration-thickness:10.5%;text-decoration-skip-ink:none">AquaAww</a> because I can’t always be<br>there to say “have some water.”</p>'
+             '<p style="margin-bottom:0"><br>So I made something small that sits quietly on your screen and says it for me, with a smile.<br>Every sip is me looking out for you, even when I’m not in the room.</p><p>​</p><p style="color:#7199cc">_  for my wife</p></div></div></div>')
+    b.append('<div class="fx" style="right:17px;top:24.72px"><div class="in flip"><p class="jb nw" style="font-size:11.166px;color:#000">Water reminder:</p></div></div>')
+    # laptop
+    b.append('<div class="a" style="left:-56.28px;top:462.82px;width:293.385px;height:3.242px"><img alt="" src="' + M + 'shadow.svg" loading="lazy" style="position:absolute;left:-4.86%;top:-440%;width:109.72%;height:980%"></div>')
+    b.append('<div class="a" style="left:-41.37px;top:278.36px;width:264.532px;height:179.597px;background:#1a202c;border:.648px solid #4a5568;border-radius:9.077px 9.077px 1.297px 1.297px"></div>')
+    b.append('<div class="a" style="left:-39.75px;top:279.98px;width:261.291px;height:171.168px;background:#000;border-radius:7.132px 7.132px 0 0"></div>')
+    b.append('<div class="fx" style="left:-34.24px;top:285.26px;width:249.944px;height:162.549px"><div class="in flip" style="width:249.944px;height:162.549px;background:#fff;overflow:hidden"><img alt="AquaAww on a Mac desktop, with a Drink water reminder note and a small person holding a bottle in the corner" src="' + F + 'screen.webp" loading="lazy" decoding="async" style="position:absolute;left:0;top:0;width:100%;height:100%"></div></div>')
+    b.append('<p class="a nw" style="left:90.28px;top:451.47px;transform:translateX(-50%);font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:4.214px;line-height:.9;color:#a0aec0;text-align:center">Macbook Air</p>')
+    b.append('<img class="a" alt="" src="' + M + 'bottom.svg" loading="lazy" style="left:-73.14px;top:456.66px;width:326.775px;height:5.836px">')
+    b.append('<img class="a" alt="AquaAww on a phone: a Drink water note, and a person smiling with a water bottle" src="' + F + 'phone.webp" loading="lazy" decoding="async" style="left:153.49px;top:329.95px;width:60.789px;height:117.922px;object-fit:cover">')
+    b.append('<div class="fx" style="left:155.06px;top:329.95px;width:60.803px;height:56.197px"><div class="in flip" style="width:60.803px;height:56.197px;overflow:hidden"><img alt="" src="' + F + 'phone.webp" loading="lazy" decoding="async" style="position:absolute;left:0;top:-.02%;width:100%;height:209.89%"></div></div>')
+    b.append('<div class="fx" style="left:216.08px;top:204.9px;width:79.759px;height:79.759px"><div class="in flip" style="width:79.759px;height:79.759px;overflow:hidden"><div class="a" style="inset:24.71% .79% 25.29% 0"><img alt="" src="' + M + 'smile.svg" style="position:absolute;inset:0;width:100%;height:100%"></div></div></div>')
+    b.append('<div class="fx" style="left:24.27px;top:24.72px"><div class="in flip"><a class="pm nw link ig" href="/aquaaww/" style="font-size:11.47px;color:#e83328">Learn more -&gt;</a></div></div>')
+    b.append('<a class="pgl" href="/aquaaww/" aria-label="AquaAww, the water reminder app"></a>')     # the whole page is one big link
+    b = [b[0], '<div class="pi">' + "".join(b[1:]) + '</div>', '<div class="bd br"></div>']
+
+    css = """
+:root{--u:calc(min(100vw,700px) / 402)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;overscroll-behavior:none;background:#fff}
+body{background:#fff;color:#000;font-family:"JetBrains Mono",ui-monospace,monospace;overflow-x:hidden;overscroll-behavior:none}
+img{display:block;max-width:none;-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}
+a{color:inherit;text-decoration:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#bgl{position:fixed;left:50%;top:0;width:402px;margin-left:-201px;height:100%;overflow:hidden;z-index:0;pointer-events:none}
+#st{position:relative;z-index:1;width:402px;margin:0 auto;height:calc(var(--u) * 1122.28 + 40PX);overflow:hidden}
+.a{position:absolute}
+.fx{position:absolute;display:flex;align-items:center;justify-content:center}
+.in{flex:none;position:relative}
+.cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.clip{position:absolute;inset:0;overflow:hidden}
+.clip img{max-width:none}
+.nw{white-space:nowrap}
+.ad{font-family:"Architects Daughter",cursive;font-size:11.166px;line-height:normal;color:#000}
+.pm{font-family:"Permanent Marker",cursive;line-height:normal}
+.jb{font-family:"JetBrains Mono",monospace;line-height:normal}
+.flip{transform:scaleX(-1)}
+#pg{position:absolute;left:36px;top:117px;width:331px;height:1005.28px}
+#tp{position:absolute;left:0;top:0;width:331px;height:503.28px;overflow:hidden;border-radius:22.333px 22.33px 0 0}
+#bt{position:absolute;left:0;top:502px;width:331px;height:503.28px;transform:scaleX(-1)}
+#bp{position:absolute;inset:0;overflow:hidden;border-radius:0 0 22.333px 22.333px}
+.tex{position:absolute;inset:0;background:#fcfbf6}
+.pi{position:absolute;inset:.798px}
+.tex.tr{border-radius:22.333px 22.33px 0 0}.tex.br{border-radius:0 0 22.333px 22.333px}
+.bd{position:absolute;inset:0;pointer-events:none;border:.798px solid #000}
+.bd.tr{border-radius:22.333px 22.33px 0 0}.bd.br{border-radius:0 0 22.333px 22.333px}
+#tx{position:absolute;inset:0;pointer-events:none}
+#tx *{pointer-events:auto}
+.link:active{opacity:.7}
+.pgl{position:absolute;inset:0;z-index:9;-webkit-tap-highlight-color:rgba(232,51,40,.08)}
+.ig{color:inherit;text-decoration:underline wavy transparent;text-decoration-thickness:10.5%;text-decoration-skip-ink:none;text-underline-offset:2px;transition:text-decoration-color .15s}
+.ig:hover,.ig:active,.ig:focus-visible{text-decoration-color:#e83328}
+.cb{display:none;height:23.44px;padding:0 14.3px 3.2px 23.9px;font:400 11.16px/20.21px "Permanent Marker",cursive;color:#000;white-space:nowrap;text-decoration:none;background:url(/aquaaww/img/b90a5.svg) 9.31px 0/calc(100% - 9.31px) 20.21px no-repeat,url(/aquaaww/img/d6503.svg) 0 17.57px/100% 5.87px no-repeat,url(/aquaaww/img/e5a21.svg) 0 0/9.86px 23.44px no-repeat}.cb.on{display:block}.cb:active{transform:translate(3px,3px)}
+.gbar i{position:absolute;display:block}.gbar .gl{left:0;right:0;top:4.8px;height:2.4px;background:rgba(0,0,0,.1)}.gbar .gf{left:0;top:4.8px;height:2.4px;width:calc(var(--p,0)*100%);background:#e83328;opacity:.9;transition:width .8s ease}.gbar .gm{top:0;bottom:0;width:.8px;background:#e83328;left:calc(var(--p,0)*100%);transition:left .8s ease}
+"""
+    # px -> calc(var(--u) * n)  (Figma pixels become fractions of the page width)
+    def conv(s):
+        return re.sub(r'(?<![\w.#-])(-?\d*\.?\d+)px', lambda m: f'calc(var(--u)*{m.group(1)})', s)
+    css_c = conv(css.replace(":root{--u:calc(min(100vw,700px) / 402)}", "@@ROOT@@")).replace("@@ROOT@@", ":root{--u:calc(min(100vw,700px) / 402)}")
+    body = (sr + '<div id="bgl">'
+            '<div class="a" style="left:132px;top:194px;width:970px;height:851px;transform:scaleX(-1)"><img class="cover" alt="" src="' + F + 'torn14.webp" decoding="async"></div>'
+            '<img class="a" alt="" src="' + F + 'torn13.webp" decoding="async" style="left:-443px;top:63px;width:720px;height:888px;object-fit:cover">'
+            '<img class="a" alt="Dusktillus logo" src="' + M + 'sun.svg" width="84" height="84" fetchpriority="high" style="left:50%;top:14px;width:84px;height:84px;transform:translateX(-50%)">'
+            '</div><div id="st">'
+            '<div id="pg"><div id="tp">' + "".join(top) + '</div><div id="tx">' + "".join(ex) + '</div>'
+            '<div id="bt"><div id="bp">' + "".join(b) + '</div></div></div></div>')
+    body = conv(body)
+    fonts = ("@font-face{font-family:'JetBrains Mono';src:url(/flipbook/fonts/JetBrainsMono.woff2) format('woff2');font-display:swap}"
+             "@font-face{font-family:'Architects Daughter';src:url(/flipbook/fonts/ArchitectsDaughter.woff2) format('woff2');font-display:swap}"
+             "@font-face{font-family:'Permanent Marker';src:url(/flipbook/fonts/PermanentMarker-Regular.woff2) format('woff2');font-display:swap}")
+    guard = '<script>document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG")e.preventDefault()});</script>'
+    return f'''<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dusktillus – our digital garage</title>
+<meta name="description" content="Dusktillus is our digital garage. Flip through what we are building, starting with AquaAww, a water reminder that comes as someone you love.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="{D}/">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any"><link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/assets/apple-touch-icon-v3.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Dusktillus"><meta property="og:title" content="Dusktillus: our digital garage">
+<meta property="og:description" content="Little apps that look after you. Start with AquaAww, a water reminder that comes as someone you love.">
+<meta property="og:url" content="{D}/"><meta property="og:image" content="{D}/assets/og-dusktillus.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{D}/assets/og-dusktillus.png">
+<link rel="preload" href="/flipbook/fonts/ArchitectsDaughter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/flipbook/fonts/JetBrainsMono.woff2" as="font" type="font/woff2" crossorigin>
+<style>{fonts}{css_c}</style>
+<script type="application/ld+json">{json.dumps(hub_ld, separators=(",", ":"))}</script>
+<script defer src="/_vercel/insights/script.js"></script>
+{guard}
+<script>try{{var _p=localStorage.getItem("aq_p");if(_p!==null)document.documentElement.style.setProperty("--p",_p)}}catch(e){{}}</script>
+</head><body>{body}<script>if(innerWidth>=700&&!/Mobi|iPhone|iPod/i.test(navigator.userAgent))location.replace("/");</script></body></html>'''
