@@ -254,7 +254,7 @@ async function installUpdate() {
   if (!app.isPackaged && !process.env.AQ_UPDATE_DEST) { alertBox('Update', 'Updates install only in the packaged app.'); return; }
   updating = true;
   const dir = path.join(app.getPath('userData'), 'update'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
-  const base = `https://github.com/${REPO}/releases/latest/download/`, file = IS_MAC ? 'AquaAww-arm64.dmg' : 'AquaAww-Setup.exe', local = path.join(dir, file);
+  const base = `https://github.com/${REPO}/releases/latest/download/`, file = IS_MAC ? 'JoyBoy-Reminder-arm64.dmg' : 'JoyBoy-Reminder-Setup.exe', local = path.join(dir, file);
   try {
     const sums = await (await net.fetch(base + 'SHA256SUMS.txt', { signal: AbortSignal.timeout(20000) })).text();
     const want = (sums.split('\n').map(l => l.trim().split(/\s+/)).find(p => p[1] === file || p[1] === '*' + file) || [])[0];

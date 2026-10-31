@@ -30,7 +30,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FOREGROUND_SERVICE_SUBTYPE"
-                android:value="Shows a small floating drink-water reminder over other apps" />
+                android:value="Shows a small floating tablet reminder over other apps" />
         </service>
 
         <receiver

@@ -1,7 +1,7 @@
 {
-  "name": "aquaaww",
+  "name": "joyboy-reminder",
   "version": "1.1.6",
-  "description": "JoyBoy Reminder - a friendly buddy that floats over your screen to remind you to drink water",
+  "description": "JoyBoy Reminder - a friendly buddy that floats over your screen to remind you to take tablet",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

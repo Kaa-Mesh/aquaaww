@@ -15,9 +15,9 @@ async function redis(cmds) {
 
 const REL = process.env.DOWNLOAD_BASE || 'https://github.com/kaa-mesh/aquaaww/releases/latest/download/';
 const DL = {
-  android: REL + 'AquaAww.apk',
-  windows: REL + 'AquaAww-Setup.exe',
-  mac: REL + 'AquaAww-arm64.dmg',
+  android: REL + 'JoyBoy-Reminder.apk',
+  windows: REL + 'JoyBoy-Reminder-Setup.exe',
+  mac: REL + 'JoyBoy-Reminder-arm64.dmg',
 };
 
 const EMAIL_RE = /^[^\s@<>"'`;,]+@[^\s@<>"'`;,]+\.[^\s@<>"'`;,]{2,}$/;
