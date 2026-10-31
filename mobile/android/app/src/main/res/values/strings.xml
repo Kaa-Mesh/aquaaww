@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">AquaAww</string>
-    <string name="title_activity_main">AquaAww</string>
-    <string name="package_name">com.aquaaww.app</string>
-    <string name="custom_url_scheme">com.aquaaww.app</string>
+    <string name="app_name">JoyBoy Reminder</string>
+    <string name="title_activity_main">JoyBoy Reminder</string>
+    <string name="package_name">com.joyboyreminder.app</string>
+    <string name="custom_url_scheme">com.joyboyreminder.app</string>
 </resources>

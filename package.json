@@ -1,7 +1,7 @@
 {
   "name": "aquaaww",
   "version": "1.1.6",
-  "description": "A tiny menu-bar buddy that reminds you to drink water",
+  "description": "JoyBoy Reminder - a friendly buddy that floats over your screen to remind you to drink water",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,8 +9,8 @@
     "build:win": "electron-builder --win"
   },
   "build": {
-    "appId": "com.aquaaww.app",
-    "productName": "AquaAww",
+    "appId": "com.joyboyreminder.app",
+    "productName": "JoyBoy Reminder",
     "afterPack": "./adhoc-sign.js",
     "asarUnpack": [
       "node_modules/ffmpeg-static/**",

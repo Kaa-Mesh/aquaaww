@@ -13,7 +13,7 @@ exports.default = async function (ctx) {
   const drop = plat === 'win32' ? ['ffmpeg', 'ffmpeg.LICENSE', 'ffmpeg.README'] : ['ffmpeg.exe', 'ffmpeg.exe.LICENSE', 'ffmpeg.exe.README'];
   for (const f of drop) fs.rmSync(path.join(ff, f), { force: true });
 
-  if (plat === 'win32') {      // put the AquaAww glass on the .exe itself (shortcuts, taskbar, toasts); done in pure JS so no Wine is needed
+  if (plat === 'win32') {      // put the JoyBoy Reminder icon on the .exe itself (shortcuts, taskbar, toasts); done in pure JS so no Wine is needed
     try {
       const ResEdit = require('resedit');
       const exePath = path.join(ctx.appOutDir, ctx.packager.appInfo.productFilename + '.exe');

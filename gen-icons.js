@@ -1,44 +1,98 @@
-const sharp=require('sharp'),fs=require('fs'),path=require('path');
-// Regenerates every icon from assets/aquaaww-logo-source.svg.  Needs sharp:  npm i --no-save sharp && node gen-icons.js
-const R=__dirname+'/';
-const src=fs.readFileSync(R+'assets/aquaaww-logo-source.svg','utf8');
-const paths=[...src.matchAll(/<path d="([^"]+)" fill="(#[0-9A-Fa-f]+)"\/>/g)].map(m=>({d:m[1],f:m[2]}));
-const W=250,H=306;
-const glass=(blue='#1B44A9',red='#CF2E27')=>`<path d="${paths[0].d}" fill="${blue}"/><path d="${paths[1].d}" fill="${red}"/>`;
-const mono=c=>`<path d="${paths[0].d}" fill="${c}"/><path d="${paths[1].d}" fill="${c}"/>`;
-// svg canvas w x h with the logo centred and `hh` tall; optional background
-function place(cw,ch,hh,body,bg){const s=hh/H,w=W*s,x=(cw-w)/2,y=(ch-hh)/2;return `<svg xmlns="http://www.w3.org/2000/svg" width="${cw}" height="${ch}" viewBox="0 0 ${cw} ${ch}">${bg||''}<g transform="translate(${x} ${y}) scale(${s})">${body}</g></svg>`}
-const png=async(svg,out,px,py)=>{fs.mkdirSync(path.dirname(out),{recursive:true});await sharp(Buffer.from(svg),{density:300}).resize(px,py||px).png().toFile(out)};
-const cream='#F9F0E3';
-(async()=>{
-  // logos as files
-  fs.writeFileSync(R+'site/assets/aquaaww-logo.svg',src.replace(/<svg /,'<svg ').trim());
-  fs.writeFileSync(R+'mobile/www/img/design/logo.svg',src.trim());
-  // favicon: glass on cream tile
-  fs.writeFileSync(R+'site/favicon.svg',place(64,64,46,glass(),`<rect width="64" height="64" rx="14" fill="${cream}"/>`));
-  await png(place(180,180,128,glass(),`<rect width="180" height="180" fill="${cream}"/>`),R+'site/assets/apple-touch-icon-v2.png',180);
-  // desktop icons
-  const tile=`<rect x="100" y="100" width="824" height="824" rx="185" fill="${cream}"/>`;
-  await png(place(1024,1024,560,glass(),tile),R+'build/icon.png',1024);
-  await png(place(1024,1024,560,glass(),tile),R+'assets/app-icon.png',512);
-  fs.writeFileSync(R+'assets/app-icon.svg',place(1024,1024,560,glass(),tile));
-  fs.writeFileSync(R+'assets/logo.svg',src.trim());
-  await png(place(15,18,18,mono('#000')),R+'assets/trayTemplate.png',15,18);
-  await png(place(30,36,36,mono('#000')),R+'assets/trayTemplate@2x.png',30,36);
-  await png(place(30,36,36,mono('#fff')),R+'assets/tray-white.png',30,36);
-  // android
-  const RES=R+'mobile/android/app/src/main/res';
-  const D={mdpi:1,hdpi:1.5,xhdpi:2,xxhdpi:3,xxxhdpi:4};
-  for(const [d,k] of Object.entries(D)){
-    const a=Math.round(108*k), l=Math.round(48*k);
-    await png(place(108,108,52,glass()),`${RES}/mipmap-${d}/ic_launcher_foreground.png`,a);
-    await png(place(48,48,32,glass(),`<rect width="48" height="48" rx="9" fill="${cream}"/>`),`${RES}/mipmap-${d}/ic_launcher.png`,l);
-    await png(place(48,48,30,glass(),`<circle cx="24" cy="24" r="24" fill="${cream}"/>`),`${RES}/mipmap-${d}/ic_launcher_round.png`,l);
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
+const pngToIco = (m => m.default || m)(require('png-to-ico'));
+
+const R = __dirname + '/';
+const W = 250, H = 250;
+
+// Color palette:
+const cream = '#F9F0E3';
+const tapeGold = '#E9B24E';
+const ink = '#342725';
+const blushRed = '#CF2E27';
+
+// The 😊 emoji logo SVG
+const emojiSvg = `<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="125" cy="125" r="112" fill="${tapeGold}" stroke="${ink}" stroke-width="10"/>
+  <!-- Smiling eyes -->
+  <path d="M 66 106 C 72 82, 102 82, 108 106" fill="none" stroke="${ink}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 142 106 C 148 82, 178 82, 184 106" fill="none" stroke="${ink}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Rosy blush cheeks -->
+  <ellipse cx="58" cy="134" rx="20" ry="12" fill="${blushRed}" opacity="0.75"/>
+  <ellipse cx="192" cy="134" rx="20" ry="12" fill="${blushRed}" opacity="0.75"/>
+  <!-- Warm smiling mouth -->
+  <path d="M 78 142 C 82 186, 168 186, 172 142" fill="none" stroke="${ink}" stroke-width="13" stroke-linecap="round"/>
+</svg>`;
+
+// Monochrome emoji for menu bar / tray
+const monoEmoji = (color) => `<g>
+  <circle cx="125" cy="125" r="110" fill="none" stroke="${color}" stroke-width="20"/>
+  <path d="M 66 106 C 72 82, 102 82, 108 106" fill="none" stroke="${color}" stroke-width="20" stroke-linecap="round"/>
+  <path d="M 142 106 C 148 82, 178 82, 184 106" fill="none" stroke="${color}" stroke-width="20" stroke-linecap="round"/>
+  <ellipse cx="58" cy="134" rx="14" ry="9" fill="${color}"/>
+  <ellipse cx="192" cy="134" rx="14" ry="9" fill="${color}"/>
+  <path d="M 78 142 C 82 186, 168 186, 172 142" fill="none" stroke="${color}" stroke-width="20" stroke-linecap="round"/>
+</g>`;
+
+// Place inside canvas with optional background
+function place(cw, ch, hh, body, bg) {
+  const s = hh / H, w = W * s, x = (cw - w) / 2, y = (ch - hh) / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${cw}" height="${ch}" viewBox="0 0 ${cw} ${ch}">${bg || ''}<g transform="translate(${x} ${y}) scale(${s})">${body}</g></svg>`;
+}
+
+const png = async (svg, out, px, py) => {
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  await sharp(Buffer.from(svg), { density: 300 }).resize(px, py || px).png().toFile(out);
+};
+
+(async () => {
+  console.log('Generating all logo assets with 😊 emoji...');
+
+  // Save source SVG files
+  fs.writeFileSync(R + 'assets/aquaaww-logo-source.svg', emojiSvg.trim());
+  fs.writeFileSync(R + 'assets/logo.svg', emojiSvg.trim());
+  fs.writeFileSync(R + 'mobile/www/img/design/logo.svg', emojiSvg.trim());
+  if (fs.existsSync(R + 'site/assets')) fs.writeFileSync(R + 'site/assets/aquaaww-logo.svg', emojiSvg.trim());
+
+  // Web favicon
+  if (fs.existsSync(R + 'site')) {
+    fs.writeFileSync(R + 'site/favicon.svg', place(64, 64, 52, emojiSvg.replace(/<svg[^>]*>|<\/svg>/g, ''), `<rect width="64" height="64" rx="14" fill="${cream}"/>`));
+    await png(place(180, 180, 140, emojiSvg.replace(/<svg[^>]*>|<\/svg>/g, ''), `<rect width="180" height="180" fill="${cream}"/>`), R + 'site/assets/apple-touch-icon-v2.png', 180);
   }
-  await png(place(96,96,80,mono('#fff')),`${RES}/drawable/ic_stat_drop.png`,96);
-  await png(place(288,288,160,glass()),`${RES}/drawable/splash_drop.png`,576);
-  // web: dusk mark for company pages, org logo
-  fs.writeFileSync(R+'site/assets/dusk.svg',`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="color:#f4eee4"><rect width="64" height="64" rx="14" fill="#15132b"/><g id="m"><path d="M12 42a20 20 0 0 1 40 0z" fill="#f2a65a"/><rect x="8" y="46" width="48" height="3.5" rx="1.75" fill="currentColor"/><rect x="18" y="52.5" width="28" height="3.5" rx="1.75" fill="currentColor" opacity=".55"/></g></svg>`);
-  await sharp(R+'site/flipbook/img/sun.svg',{density:300}).resize(512,512,{fit:'contain',background:'#0000'}).png().toFile(R+'site/assets/logo-512.png');
-  console.log('logos ok');
+
+  // Desktop icons (squircle cream tile)
+  const innerEmoji = emojiSvg.replace(/<svg[^>]*>|<\/svg>/g, '');
+  const tile = `<rect x="100" y="100" width="824" height="824" rx="185" fill="${cream}"/>`;
+  await png(place(1024, 1024, 620, innerEmoji, tile), R + 'build/icon.png', 1024);
+  await png(place(1024, 1024, 620, innerEmoji, tile), R + 'assets/app-icon.png', 512);
+  fs.writeFileSync(R + 'assets/app-icon.svg', place(1024, 1024, 620, innerEmoji, tile));
+
+  // Windows build/icon.ico (all standard icon resolutions)
+  const icoBuffers = [];
+  for (const s of [16, 24, 32, 48, 64, 128, 256]) {
+    const icoSvg = place(s, s, Math.round(s * 0.75), innerEmoji, `<rect width="${s}" height="${s}" rx="${Math.round(s * 0.2)}" fill="${cream}"/>`);
+    icoBuffers.push(await sharp(Buffer.from(icoSvg), { density: 400 }).resize(s, s).png().toBuffer());
+  }
+  fs.writeFileSync(R + 'build/icon.ico', await pngToIco(icoBuffers));
+  console.log('build/icon.ico created:', fs.statSync(R + 'build/icon.ico').size, 'bytes');
+
+  // Menu bar / Tray icons (crisp 18px and Retina 36px)
+  await png(place(18, 18, 16, monoEmoji('#000')), R + 'assets/trayTemplate.png', 18, 18);
+  await png(place(36, 36, 32, monoEmoji('#000')), R + 'assets/trayTemplate@2x.png', 36, 36);
+  await png(place(36, 36, 32, monoEmoji('#fff')), R + 'assets/tray-white.png', 36, 36);
+
+  // Android mipmap icons
+  const RES = R + 'mobile/android/app/src/main/res';
+  const D = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 };
+  for (const [d, k] of Object.entries(D)) {
+    const a = Math.round(108 * k), l = Math.round(48 * k);
+    await png(place(108, 108, 60, innerEmoji), `${RES}/mipmap-${d}/ic_launcher_foreground.png`, a);
+    await png(place(48, 48, 36, innerEmoji, `<rect width="48" height="48" rx="10" fill="${cream}"/>`), `${RES}/mipmap-${d}/ic_launcher.png`, l);
+    await png(place(48, 48, 36, innerEmoji, `<circle cx="24" cy="24" r="24" fill="${cream}"/>`), `${RES}/mipmap-${d}/ic_launcher_round.png`, l);
+  }
+  await png(place(96, 96, 80, monoEmoji('#fff')), `${RES}/drawable/ic_stat_drop.png`, 96);
+  await png(place(288, 288, 180, innerEmoji), `${RES}/drawable/splash_drop.png`, 576);
+
+  console.log('All icons successfully generated!');
 })();

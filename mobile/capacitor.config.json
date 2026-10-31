@@ -1,6 +1,6 @@
 {
-  "appId": "com.aquaaww.app",
-  "appName": "AquaAww",
+  "appId": "com.joyboyreminder.app",
+  "appName": "JoyBoy Reminder",
   "webDir": "www",
   "backgroundColor": "#F9F0E3",
   "android": { "allowMixedContent": false },

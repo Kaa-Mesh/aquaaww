@@ -220,12 +220,12 @@ async function checkForUpdates() {
   app.focus({ steal: true });
   if (!/^[\w.-]+\/[\w.-]+$/.test(REPO) || /^OWNER\//.test(REPO)) return alertBox('Updates are not set up', 'Set the "repository" field in package.json to your GitHub repo (owner/name) to enable update checks.');
   try {
-    const res = await net.fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { 'User-Agent': 'aquaaww', Accept: 'application/vnd.github+json' } });
+    const res = await net.fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { 'User-Agent': 'joyboy-reminder', Accept: 'application/vnd.github+json' } });
     if (res.status === 404) return alertBox('No releases yet', `Nothing has been published at github.com/${REPO}/releases.`);
     if (!res.ok) throw new Error('GitHub answered ' + res.status);
     const rel = await res.json(), latest = rel.tag_name || '';
-    if (!newer(latest, app.getVersion())) return alertBox('You are up to date', `AquaAww ${app.getVersion()} is the latest version.`);
-    const r = await alertBox(`AquaAww ${latest.replace(/^v/, '')} is available`, `You have ${app.getVersion()}.` + (rel.name ? `\n\n${rel.name}` : ''), ['Update now', 'Later']);
+    if (!newer(latest, app.getVersion())) return alertBox('You are up to date', `JoyBoy Reminder ${app.getVersion()} is the latest version.`);
+    const r = await alertBox(`JoyBoy Reminder ${latest.replace(/^v/, '')} is available`, `You have ${app.getVersion()}.` + (rel.name ? `\n\n${rel.name}` : ''), ['Update now', 'Later']);
     if (r.response === 0) installUpdate();
   } catch (e) {
     alertBox('Could not check for updates', String(e && e.message || e), ['OK'], 'error');
@@ -244,13 +244,13 @@ async function download(url, dest, label) {
     hash.update(chunk); got += chunk.length;
     if (!out.write(chunk)) await new Promise(r => out.once('drain', r));
     const pct = total ? Math.floor(100 * got / total) : 0;
-    if (pct !== last) { last = pct; const t = `${label} ${pct}%`; if (tray) { tray.setToolTip('AquaAww - ' + t); if (IS_MAC) tray.setTitle(' ' + t); } }
+    if (pct !== last) { last = pct; const t = `${label} ${pct}%`; if (tray) { tray.setToolTip('JoyBoy Reminder - ' + t); if (IS_MAC) tray.setTitle(' ' + t); } }
   }
   await new Promise((r, j) => out.end(e => e ? j(e) : r()));
   return hash.digest('hex');
 }
 async function installUpdate() {
-  if (updating) { alertBox('Already updating', 'AquaAww is downloading the update. It will restart by itself.'); return; }
+  if (updating) { alertBox('Already updating', 'JoyBoy Reminder is downloading the update. It will restart by itself.'); return; }
   if (!app.isPackaged && !process.env.AQ_UPDATE_DEST) { alertBox('Update', 'Updates install only in the packaged app.'); return; }
   updating = true;
   const dir = path.join(app.getPath('userData'), 'update'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
@@ -259,7 +259,7 @@ async function installUpdate() {
     const sums = await (await net.fetch(base + 'SHA256SUMS.txt', { signal: AbortSignal.timeout(20000) })).text();
     const want = (sums.split('\n').map(l => l.trim().split(/\s+/)).find(p => p[1] === file || p[1] === '*' + file) || [])[0];
     if (!/^[a-f0-9]{64}$/.test(want || '')) throw new Error('Could not read the checksum for this release.');
-    if (tray) { tray.setToolTip('AquaAww - downloading update'); if (IS_MAC) tray.setTitle(' Updating…'); }
+    if (tray) { tray.setToolTip('JoyBoy Reminder - downloading update'); if (IS_MAC) tray.setTitle(' Updating…'); }
     const got = await download(base + file, local, 'Updating');
     if (got !== want) throw new Error('The downloaded file did not match its checksum, so it was not installed.');
     if (IS_WIN) {
@@ -268,10 +268,10 @@ async function installUpdate() {
     }
     // macOS: mount the disk image, stage the new app, then swap it in after this app quits
     const exe = app.getPath('exe'), cur = path.resolve(exe, '../../..');
-    const dest = process.env.AQ_UPDATE_DEST || (cur.endsWith('.app') && !cur.startsWith('/Volumes/') && !cur.includes('AppTranslocation') ? cur : '/Applications/AquaAww.app');
+    const dest = process.env.AQ_UPDATE_DEST || (cur.endsWith('.app') && !cur.startsWith('/Volumes/') && !cur.includes('AppTranslocation') ? cur : '/Applications/JoyBoy Reminder.app');
     const mnt = path.join(dir, 'mnt'); fs.mkdirSync(mnt);
     await sh('/usr/bin/hdiutil', ['attach', '-nobrowse', '-readonly', '-noverify', '-mountpoint', mnt, local]);
-    const stage = path.join(dir, 'AquaAww.app');
+    const stage = path.join(dir, 'JoyBoy Reminder.app');
     try {
       const appName = fs.readdirSync(mnt).find(n => n.endsWith('.app'));
       if (!appName) throw new Error('The update did not contain the app.');
@@ -279,7 +279,7 @@ async function installUpdate() {
       await sh('/usr/bin/xattr', ['-cr', stage]);
     } finally { await sh('/usr/bin/hdiutil', ['detach', mnt, '-quiet', '-force']).catch(() => {}); }
     try { fs.accessSync(path.dirname(dest), fs.constants.W_OK); }
-    catch { shell.openPath(local); throw new Error('AquaAww could not replace itself here, so the update was opened for you. Drag AquaAww into Applications.'); }
+    catch { shell.openPath(local); throw new Error('JoyBoy Reminder could not replace itself here, so the update was opened for you. Drag JoyBoy Reminder into Applications.'); }
     const script = path.join(dir, 'swap.sh');
     fs.writeFileSync(script, `#!/bin/bash\nwhile kill -0 ${process.pid} 2>/dev/null; do sleep 0.4; done\nrm -rf "${dest}.old"; mv "${dest}" "${dest}.old" 2>/dev/null\nif ditto "${stage}" "${dest}"; then rm -rf "${dest}.old"; xattr -cr "${dest}"; else rm -rf "${dest}"; mv "${dest}.old" "${dest}"; fi\nopen "${dest}"\n`, { mode: 0o755 });
     spawn('/bin/bash', [script], { detached: true, stdio: 'ignore' }).unref();
@@ -317,7 +317,7 @@ function applyForce() {
   if (Date.now() - forceShown < 30 * 60000) return;           // ask again at most every 30 minutes, not in a loop
   forceShown = Date.now();
   app.focus({ steal: true });
-  alertBox('Please update AquaAww', `This version (${app.getVersion()}) is too old to keep running. Install version ${updInfo.latest} to continue.` + (updInfo.message ? `\n\n${updInfo.message}` : ''), ['Update now', 'Quit'], 'warning')
+  alertBox('Please update JoyBoy Reminder', `This version (${app.getVersion()}) is too old to keep running. Install version ${updInfo.latest} to continue.` + (updInfo.message ? `\n\n${updInfo.message}` : ''), ['Update now', 'Quit'], 'warning')
     .then(r => { if (r.response === 0) installUpdate(); else if (r.response === 1) app.quit(); });
 }
 
@@ -340,8 +340,8 @@ function convertVideo(src, dest) {
 }
 const PRESET_DIR = path.join(__dirname, 'assets', 'presets').replace('app.asar', 'app.asar.unpacked');
 const listPresets = () => { try { return fs.readdirSync(PRESET_DIR).filter(f => /\.mp4$/i.test(f)).map(f => f.replace(/\.mp4$/i, '')).sort(); } catch { return []; } };
-const PRESET_MODES = { 'yours truly': 'green' };   // presets filmed on a green screen
-const defaultPreset = () => { const l = listPresets(); return l.includes('yours truly') ? 'yours truly' : l[0]; };   // same video as the Android app
+const PRESET_MODES = { 'yours truly': 'green', 'JoyBoy': 'raw' };   // presets filmed on a green screen
+const defaultPreset = () => { const l = listPresets(); return l.includes('JoyBoy') ? 'JoyBoy' : (l.includes('yours truly') ? 'yours truly' : l[0]); };
 function usePreset(name, show = true) {
   const km = PRESET_MODES[name] || 'white';
   set({ videoPath: path.join(PRESET_DIR, name + '.mp4'), keyed: km === 'white', keyMode: km, preset: name }, true);
@@ -353,7 +353,7 @@ async function loadVideoFile(src, mode = 'white') {
   converting = true;
   const dest = path.join(app.getPath('userData'), 'buddy-' + Date.now() + '.mp4');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  if (tray) { tray.setToolTip('AquaAww - preparing video...'); if (IS_MAC) tray.setTitle(' Preparing...'); }
+  if (tray) { tray.setToolTip('JoyBoy Reminder - preparing video...'); if (IS_MAC) tray.setTitle(' Preparing...'); }
   try { await convertVideo(src, dest); }
   catch (e) { fs.unlink(dest, () => {}); throw e; }
   finally { converting = false; if (tray && IS_MAC) tray.setTitle(''); updateTray(); }
@@ -386,9 +386,9 @@ function updateTray() {
   const when = settings.paused ? 'paused' : nextAt ? new Date(nextAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
   const radio = (label, key, val, resched) => ({ label, type: 'radio', checked: settings[key] === val, click: () => set({ [key]: val }, resched) });
   const hoursChecked = h => h ? settings.limitHours && settings.activeFrom === h[0] && settings.activeTo === h[1] : !settings.limitHours;
-  tray.setToolTip(`AquaAww - next: ${when}`);
+  tray.setToolTip(`JoyBoy Reminder - next: ${when}`);
   if (mustUpdate()) {
-    tray.setToolTip('AquaAww - update required');
+    tray.setToolTip('JoyBoy Reminder - update required');
     return tray.setContextMenu(Menu.buildFromTemplate([
       { label: `Update required (you have ${app.getVersion()})`, enabled: false },
       { label: 'Update now…', click: installUpdate },
@@ -451,7 +451,7 @@ else {
   app.on('second-instance', () => {});
   app.whenReady().then(() => {
     if (IS_MAC) { app.setActivationPolicy('accessory'); app.dock.hide(); }   // menu-bar agent: needed to float over full-screen apps
-    if (IS_WIN) app.setAppUserModelId('com.aquaaww.app');
+    if (IS_WIN) app.setAppUserModelId('com.joyboyreminder.app');
     powerSaveBlocker.start('prevent-app-suspension');                          // stops macOS App Nap from delaying the reminder clock of a window-less menu-bar app
     load();
     if (app.isPackaged && !settings.loginAsked) { app.setLoginItemSettings({ openAtLogin: true }); settings.loginAsked = true; save(); }   // default on, user can switch it off in the menu

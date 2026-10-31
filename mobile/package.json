@@ -1,8 +1,8 @@
 {
-  "name": "aquaaww-mobile",
+  "name": "joyboy-reminder-mobile",
   "version": "1.0.0",
   "private": true,
-  "description": "AquaAww for Android (Capacitor)",
+  "description": "JoyBoy Reminder for Android (Capacitor)",
   "author": "Kaamesh",
   "license": "MIT",
   "dependencies": {

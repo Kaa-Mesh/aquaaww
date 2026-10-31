@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#F9F0E3">
-<title>AquaAww</title>
+<title>JoyBoy Reminder</title>
 <style>
   @font-face{font-family:"Permanent Marker";src:url(fonts/PermanentMarker-Regular.ttf) format("truetype")}
   @font-face{font-family:"Special Elite";src:url(fonts/SpecialElite-Regular.ttf) format("truetype")}
@@ -80,7 +80,7 @@
   #onboard{position:fixed;inset:0;background:var(--cream);z-index:80;display:none;overflow:auto;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
   #onboard.on{display:block}
   .obWrap{max-width:420px;margin:0 auto;padding:26px 24px 34px;text-align:left}
-  .obLogo{width:38px;height:46.5px;display:block;margin-bottom:14px}
+  .obLogo{width:42px;height:42px;display:block;margin-bottom:14px}
   .obStep{display:none}.obStep.on{display:block}
   .obCount{font:13px "Special Elite",monospace;color:#7a6a64;margin-bottom:6px}
   #onboard h1{font:400 30px/1.1 "Permanent Marker",cursive;margin:0 0 14px;color:var(--ink)}
@@ -108,7 +108,7 @@
   <!-- ================= HOME (Figma "iPhone 16 & 17 Pro - 2") ================= -->
   <div id="home" class="abs" style="inset:0">
 
-    <div class="abs" style="left:28px;top:64px;width:48.2px;height:59px;overflow:hidden">
+    <div class="abs" style="left:28px;top:64px;width:52px;height:52px;overflow:hidden">
       <div class="abs" style="inset:0"><img class="layer" alt="" src="img/design/logo.svg"></div>
     </div>
 
@@ -120,9 +120,9 @@
     </div>
 
     <div class="abs marker" style="left:71px;top:201px;width:259px;font-size:11.099px;color:#342725;white-space:normal;line-height:normal">
-      <p style="margin:0">I built AquaAww because I can’t always be there to say “have some water.”</p>
+      <p style="margin:0">I built JoyBoy Reminder because I can’t always be there to say “have some water.”</p>
       <p style="margin:0"><br>So I made something small that sits quietly on your screen and says it for me, with a smile.<br>Every sip is me looking out for you, even when I’m not in the room.</p>
-      <p style="margin:7px 0 0;text-align:right;color:var(--coral)">– to my wife</p>
+      <p style="margin:7px 0 0;text-align:right;color:var(--coral)">– by Kaamesh</p>
     </div>
 
     <!-- hand-drawn frame + the buddy -->
@@ -185,7 +185,7 @@
       <div class="obCount">1 of 2</div>
       <h1>First, let me reach you</h1>
       <div class="obMock"><b>Time to drink some water</b><span>Tap to meet your buddy</span><div class="obBtns"><i>I drank</i><i>Remind me later</i></div></div>
-      <p>AquaAww works by sending you a gentle reminder with two buttons: <b>“I drank”</b> and <b>“Later”</b>.</p>
+      <p>JoyBoy Reminder works by sending you a gentle reminder with two buttons: <b>“I drank”</b> and <b>“Later”</b>.</p>
       <p>If notifications are off, I can’t reach you, and the reminder is lost. So this one is <b>required</b>.</p>
       <p class="obWarn" id="obWarn"></p>
       <button class="coralBtn big" id="obNotif">Allow notifications</button>
@@ -213,7 +213,7 @@
   <div class="row"><span>Pause reminders</span><label class="switch"><input type="checkbox" id="paused"><i></i></label></div>
   <div class="row"><span id="perm" style="flex:1">Notifications</span><button class="chip" id="enable">Enable</button></div>
   <div class="row" style="margin-top:18px"><button class="coralBtn" id="t30">Test in 30 seconds</button></div>
-  <p class="note">Reminders arrive as notifications with “I drank” and “Remind me later”. If they come late, set battery to “Unrestricted” for AquaAww in Android settings.</p>
+  <p class="note">Reminders arrive as notifications with “I drank” and “Remind me later”. If they come late, set battery to “Unrestricted” for JoyBoy Reminder in Android settings.</p>
 </section>
 
 <section class="sheet" id="sheetTime">
@@ -256,7 +256,7 @@
 <script src="mp/person.js"></script>
 <video id="v" playsinline muted loop></video>
 <div id="toast"></div>
-<div id="force" role="alertdialog" aria-labelledby="fh"><h2 id="fh">Please update AquaAww</h2><p id="fp"></p><button id="fb" type="button">Update now</button></div>
+<div id="force" role="alertdialog" aria-labelledby="fh"><h2 id="fh">Please update JoyBoy Reminder</h2><p id="fp"></p><button id="fb" type="button">Update now</button></div>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -270,7 +270,7 @@ function fit() { scale = Math.min(innerWidth / 402, innerHeight / 874); $('stage
 addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); if (window.visualViewport) visualViewport.addEventListener('resize', fit); fit();
 
 /* ---------------- settings ---------------- */
-const PRESET_MODES = { 'yours truly': 'green' };                                  // presets filmed on a green screen
+const PRESET_MODES = { 'yours truly': 'green', 'JoyBoy': 'raw' };                                  // presets filmed on a green screen
 const modeOf = () => (S.source === 'preset' && PRESET_MODES[S.preset || presets[0]]) || S.mode || (S.keyed ? 'white' : 'raw');                    // 'white' = remove white, 'raw' = as is, 'person' = cut out a person on any background
 const DEF = { interval: 45, snooze: 15, from: '09:00', to: '21:00', paused: false, source: 'preset', preset: '', keyed: true, stats: {}, nextAt: 0, overlay: false, corner: 'bottom-right', nativeVideo: '' };
 let S = { ...DEF, ...(JSON.parse(localStorage.getItem('wb') || '{}')) };
@@ -496,7 +496,7 @@ async function runOnboarding() {                                              //
     const st = await permState();
     if (st === 'unsupported') { hideOnboard(); return; }                       // plain browser preview: nothing to ask
     if (st !== 'granted') {                                                     // notifications are REQUIRED: the app stays on this screen until they are on
-      showOnboard(1, st === 'denied' && S.obAsked ? 'Notifications are off, so AquaAww cannot remind you. Please turn them on to continue.' : '');
+      showOnboard(1, st === 'denied' && S.obAsked ? 'Notifications are off, so JoyBoy Reminder cannot remind you. Please turn them on to continue.' : '');
       return;
     }
     await refreshOverlayStatus();

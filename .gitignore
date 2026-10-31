@@ -15,14 +15,18 @@ mobile/android/local.properties
 # Drop your own videos in assets/presets/ (1:1 .mp4) to ship them as presets.
 assets/presets/*
 !assets/presets/.gitkeep
+!assets/presets/JoyBoy.mp4
 assets/*-src.webp
 
 # Third-party character videos
 mobile/www/presets/*.mp4
+!JoyBoy.mp4
+!mobile/www/presets/JoyBoy.mp4
 
 # Workflow kept in docs/release.yml.example
 .github/
 
 # Media files
 *.mp4
+!JoyBoy.mp4
 *.mov
