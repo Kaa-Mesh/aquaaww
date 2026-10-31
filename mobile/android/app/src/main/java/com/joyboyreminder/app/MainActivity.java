@@ -1,4 +1,4 @@
-package com.aquaaww.app;
+package com.joyboyreminder.app;
 
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;

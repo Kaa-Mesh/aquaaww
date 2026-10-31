@@ -1,4 +1,4 @@
-package com.aquaaww.app;
+package com.joyboyreminder.app;
 
 import android.app.AlarmManager;
 import android.app.Notification;
