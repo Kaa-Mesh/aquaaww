@@ -59,7 +59,7 @@ function migrateFromWaterBuddy() {       // earlier names ("Water Buddy", "TwoTo
 function load() {
   migrateFromWaterBuddy();
   try { settings = { ...DEFAULTS, ...JSON.parse(fs.readFileSync(cfgFile(), 'utf8')) }; } catch {}
-  if (settings.preset) { settings.videoPath = path.join(PRESET_DIR, settings.preset + '.mp4'); const km = PRESET_MODES[settings.preset] || 'white'; settings.keyMode = km; settings.keyed = km === 'white'; }   // bundled presets move with the app
+  if (settings.preset) { settings.videoPath = path.join(PRESET_DIR, settings.preset + '.mp4'); const km = PRESET_MODES[settings.preset] || 'matte'; settings.keyMode = km; settings.keyed = km === 'white'; }   // bundled presets move with the app
 }
 function save() {
   try {
@@ -343,7 +343,7 @@ const listPresets = () => { try { return fs.readdirSync(PRESET_DIR).filter(f => 
 const PRESET_MODES = { 'JoyBoy': 'raw' };   // presets mode map
 const defaultPreset = () => { const l = listPresets(); return l.includes('JoyBoy') ? 'JoyBoy' : l[0]; };
 function usePreset(name, show = true) {
-  const km = PRESET_MODES[name] || 'white';
+  const km = PRESET_MODES[name] || 'matte';
   set({ videoPath: path.join(PRESET_DIR, name + '.mp4'), keyed: km === 'white', keyMode: km, preset: name }, true);
   if (show) showOverlay(false, true);
 }

@@ -1,0 +1,8 @@
+Animal presets (Baby chick, Hatching chick, Penguin, Otter, Sloth, Hedgehog, Frog, Turtle, Whale, Octopus,
+Sauropod, T-rex, Crocodile, Blowfish, Goose, Flamingo, Orangutan, Piggy)
+are Google Noto Emoji animations, https://github.com/googlefonts/noto-emoji
+Licensed under CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+Changes: converted to MP4 with a see-through mask (picture on top, mask underneath) and 128 px preview pictures.
+
+Presets sticker (penguin, frog, baby chick): Google Noto Emoji, https://github.com/googlefonts/noto-emoji
+Licensed under the Apache License 2.0.

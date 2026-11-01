@@ -121,9 +121,18 @@ function setMsg(text, plain) {
 
 function paint() {
   if (v.readyState < 2) return;
+  const km = cfg.keyMode || (cfg.key ? 'white' : 'raw');
+  if (km === 'matte') {
+    const w = v.videoWidth, h = v.videoHeight / 2;
+    ctx.drawImage(v, 0, h, w, h, 0, 0, c.width, c.height);
+    const m = ctx.getImageData(0, 0, c.width, c.height).data;
+    ctx.drawImage(v, 0, 0, w, h, 0, 0, c.width, c.height);
+    const img = ctx.getImageData(0, 0, c.width, c.height), d = img.data;
+    for (let i = 3; i < d.length; i += 4) d[i] = m[i - 3];
+    ctx.putImageData(img, 0, 0); return;
+  }
   const s = Math.min(v.videoWidth, v.videoHeight);
   ctx.drawImage(v, (v.videoWidth - s) / 2, (v.videoHeight - s) / 2, s, s, 0, 0, c.width, c.height);
-  const km = cfg.keyMode || (cfg.key ? 'white' : 'raw');
   if (km === 'raw') return;                                  // "as is": no background removal
   const img = ctx.getImageData(0, 0, c.width, c.height), d = img.data;
   if (km === 'green') {                                      // pure green screen: key out the green, despill the edges

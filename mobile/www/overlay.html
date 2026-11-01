@@ -54,6 +54,15 @@ if (mode === 'poster') {
   const ctx = c.getContext('2d', { willReadFrequently: true });
   function paint() {
     if (v.readyState < 2 || !v.videoWidth) return;
+    if (km === 'matte') {                                                   // bundled animals: top half is the picture, bottom half its see-through mask
+      const w = v.videoWidth, h = v.videoHeight / 2;
+      ctx.drawImage(v, 0, h, w, h, 0, 0, px, px);
+      const m = ctx.getImageData(0, 0, px, px).data;
+      ctx.drawImage(v, 0, 0, w, h, 0, 0, px, px);
+      const img = ctx.getImageData(0, 0, px, px), d = img.data;
+      for (let i = 3; i < d.length; i += 4) d[i] = m[i - 3];
+      ctx.putImageData(img, 0, 0); return;
+    }
     const s = Math.min(v.videoWidth, v.videoHeight);                  // centred 1:1 crop
     ctx.drawImage(v, (v.videoWidth - s) / 2, (v.videoHeight - s) / 2, s, s, 0, 0, px, px);
     if (km === 'raw') return;

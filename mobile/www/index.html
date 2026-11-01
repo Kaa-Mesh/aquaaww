@@ -63,6 +63,13 @@
   .chips{display:flex;flex-wrap:wrap;gap:9px;margin:8px 0}
   .chip{border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:10px;padding:8px 12px;font:15px "Special Elite",monospace;cursor:pointer}
   .chip.sel{background:var(--ink);color:var(--cream)}
+  /* presets sheet: one row per buddy (moving preview left, name right); Upload your own stays pinned at the bottom */
+  .plist{display:flex;flex-direction:column;gap:8px;margin:4px 0 6px}
+  .prow{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:12px;padding:6px 14px 6px 8px;font:15px "Special Elite",monospace;cursor:pointer}
+  .prow img{width:56px;height:56px;object-fit:contain;flex:none}
+  .prow.sel{background:var(--ink);color:var(--cream)}
+  .pfoot{position:sticky;bottom:calc(-24px - env(safe-area-inset-bottom));margin:0 -20px calc(-24px - env(safe-area-inset-bottom));padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:#FDF8EF;border-top:1.5px dashed #cbb99a}
+  .pfoot .note{margin:8px 0 0}
   .tape{display:inline-block;background:linear-gradient(#dcc496,#d3b987);color:#3a2d1a;padding:10px 16px;border:0;font:14px "Special Elite",monospace;cursor:pointer;
     clip-path:polygon(0 8%,3% 0,6% 10%,9% 0,100% 0,97% 20%,100% 40%,97% 60%,100% 80%,97% 100%,0 100%,3% 80%,0 60%,3% 40%,0 20%)}
   .field{margin:14px 0;font-family:"Special Elite",monospace;font-size:15px}
@@ -248,9 +255,11 @@
 
 <section class="sheet" id="sheetPresets">
   <h2>Presets<small>pick a buddy, or bring your own video</small></h2>
-  <div class="chips" id="presets"></div>
-  <div class="chips" style="margin-top:14px"><button class="tape" id="upMore">Upload your own…</button></div>
-  <p class="note">Videos must be under 30 MB.</p>
+  <div class="plist" id="presets"></div>
+  <div class="pfoot">
+    <button class="tape" id="upMore">Upload your own…</button>
+    <p class="note">Videos must be under 30 MB. Animals: Google Noto Emoji, CC BY 4.0.</p>
+  </div>
 </section>
 
 <input type="file" accept="video/*" id="upKey" hidden><input type="file" accept="video/*" id="upRaw" hidden><input type="file" accept="video/*" id="upPerson" hidden>
@@ -272,7 +281,9 @@ addEventListener('resize', fit); addEventListener('orientationchange', () => set
 
 /* ---------------- settings ---------------- */
 const PRESET_MODES = { 'JoyBoy': 'raw' };                                  // presets mode map
-const modeOf = () => (S.source === 'preset' && PRESET_MODES[S.preset || presets[0]]) || S.mode || (S.keyed ? 'white' : 'raw');                    // 'white' = remove white, 'raw' = as is, 'person' = cut out a person on any background
+const presetMode = n => PRESET_MODES[n] || 'matte';
+const defPreset = () => presets.includes('JoyBoy') ? 'JoyBoy' : presets[0];
+const modeOf = () => (S.source === 'preset' ? presetMode(S.preset || defPreset()) : S.mode) || (S.keyed ? 'white' : 'raw');                    // 'white' = remove white, 'raw' = as is, 'person' = cut out a person on any background
 const DEF = { interval: 45, snooze: 15, from: '09:00', to: '21:00', paused: false, source: 'preset', preset: '', keyed: true, stats: {}, nextAt: 0, overlay: false, corner: 'bottom-right', nativeVideo: '' };
 let S = { ...DEF, ...(JSON.parse(localStorage.getItem('wb') || '{}')) };
 const save = () => localStorage.setItem('wb', JSON.stringify(S));
@@ -289,7 +300,7 @@ const getBlob = () => kv('readonly', s => s.get('video'));
 /* ---------------- floating buddy (native overlay) ---------------- */
 let ovStatus = { canDraw: false, enabled: false, nextAt: 0, todayCount: 0 };
 let presets = [];
-const presetSrc = () => 'file:///android_asset/public/presets/' + encodeURIComponent(S.preset || presets[0] || '') + '.mp4';
+const presetSrc = () => 'file:///android_asset/public/presets/' + encodeURIComponent(S.preset || defPreset() || '') + '.mp4';
 const overlaySrc = () => (S.source === 'upload' && S.nativeVideo) ? 'file://' + S.nativeVideo : presetSrc();
 const overlayActive = () => !!(WO && S.overlay && ovStatus.canDraw);
 async function refreshOverlayStatus() {
@@ -325,7 +336,7 @@ const MAX_BYTES = 30 * 1024 * 1024;
 const v = $('v'); let curUrl = '';
 async function videoUrl() {
   if (S.source === 'upload') { const b = await getBlob(); if (b) { if (curUrl.startsWith('blob:')) URL.revokeObjectURL(curUrl); return curUrl = URL.createObjectURL(b); } }
-  const name = S.preset || presets[0]; if (!name) return '';
+  const name = S.preset || defPreset(); if (!name) return '';
   return 'presets/' + encodeURIComponent(name) + '.mp4';
 }
 function paint(canvas, ctx, mode) {
@@ -424,17 +435,37 @@ async function renderStatus() {
   $('ovmsg').textContent = !WO ? '' : !S.overlay ? 'Off: reminders arrive as notifications.' : ovStatus.canDraw ? 'On: your buddy appears over other apps.' : 'Waiting for the “Display over other apps” permission.';
 }
 /* full redraw: also rebuilds the option buttons (call after something actually changed) */
+function renderPresetList() {
+  $('presets').innerHTML = '';
+  presets.forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'prow' + (S.source === 'preset' && (S.preset || defPreset()) === n ? ' sel' : '');
+    const im = document.createElement('img');
+    im.src = 'presets/' + encodeURIComponent(n) + '.webp';
+    im.alt = '';
+    b.appendChild(im);
+    b.appendChild(document.createTextNode(n));
+    b.onclick = () => {
+      S.source = 'preset';
+      S.preset = n;
+      S.mode = presetMode(n);
+      S.keyed = S.mode === 'white';
+      save();
+      syncOverlay(false);
+      renderHome();
+      startBuddy();
+      hideSheet();
+      toast('Buddy changed: ' + n);
+    };
+    $('presets').appendChild(b);
+  });
+}
+
 async function renderHome() {
   await renderStatus();
   $('fromBtn').textContent = fmt12(S.from); $('toBtn').textContent = fmt12(S.to); $('paused').checked = S.paused; renderSegs();
   $('ovOn').checked = S.overlay; $('ovPass').checked = !!S.pass; $('ovNotify').checked = S.notify !== false;
-  $('presets').innerHTML = '';
-  presets.forEach(n => { const b = document.createElement('button'); b.className = 'chip' + (S.source === 'preset' && (S.preset || presets[0]) === n ? ' sel' : ''); b.textContent = n;
-    b.onclick = () => {
-      S.source = 'preset'; S.preset = n; S.mode = PRESET_MODES[n] || 'white'; S.keyed = S.mode === 'white'; save();
-      syncOverlay(false); renderHome(); startBuddy();
-      hideSheet(); toast('Buddy changed: ' + n);                       // close the sheet so you can see the new buddy right away
-    }; $('presets').appendChild(b); });
+  renderPresetList();
 }
 
 /* ---------------- sheets ---------------- */
